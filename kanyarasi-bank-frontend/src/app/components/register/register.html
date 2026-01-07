@@ -1,0 +1,186 @@
+<div class="register-container">
+  <div class="register-card">
+    <div class="register-header">
+      <h1>Create Account</h1>
+      <p>Join Kanyarasi Bank</p>
+    </div>
+    
+    <form (ngSubmit)="onSubmit()" class="register-form">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="fullName">Full Name *</label>
+          <input 
+            type="text" 
+            id="fullName" 
+            [(ngModel)]="user.fullName" 
+            name="fullName"
+            required
+          />
+        </div>
+        
+        <div class="form-group">
+          <label for="gender">Gender *</label>
+          <select id="gender" [(ngModel)]="user.gender" name="gender" required>
+            <option value="">Select</option>
+            <option *ngFor="let g of genders" [value]="g">{{ g }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="dob">Date of Birth *</label>
+          <input 
+            type="date" 
+            id="dob" 
+            [(ngModel)]="user.dob" 
+            name="dob"
+            required
+          />
+        </div>
+        
+        <div class="form-group">
+          <label for="nationality">Nationality *</label>
+          <select id="nationality" [(ngModel)]="user.nationality" name="nationality" required>
+            <option value="">Select</option>
+            <option *ngFor="let n of nationalities" [value]="n">{{ n }}</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="mobileNumber">Mobile Number *</label>
+          <input 
+            type="number" 
+            id="mobileNumber" 
+            [(ngModel)]="user.mobileNumber" 
+            name="mobileNumber"
+            required
+          />
+        </div>
+        
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input 
+            type="email" 
+            id="email" 
+            [(ngModel)]="user.email" 
+            name="email"
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="address">Address *</label>
+        <textarea 
+          id="address" 
+          [(ngModel)]="user.address" 
+          name="address"
+          rows="3"
+          required
+        ></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="aadhar">Aadhar Number *</label>
+          <input 
+            type="number" 
+            id="aadhar" 
+            [(ngModel)]="user.aadhar" 
+            name="aadhar"
+            required
+          />
+        </div>
+        
+        <div class="form-group">
+          <label for="pan">PAN Number *</label>
+          <input 
+            type="text" 
+            id="pan" 
+            [(ngModel)]="user.pan" 
+            name="pan"
+            maxlength="10"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="accountType">Account Type *</label>
+          <select id="accountType" [(ngModel)]="user.accountType" name="accountType" required>
+            <option value="">Select</option>
+            <option *ngFor="let type of accountTypes" [value]="type">{{ type | titlecase }}</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label for="initialDepositAmount">Initial Deposit (Min ₹1000) *</label>
+          <input 
+            type="number" 
+            id="initialDepositAmount" 
+            [(ngModel)]="user.initialDepositAmount" 
+            name="initialDepositAmount"
+            min="1000"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="username">Username *</label>
+          <input 
+            type="text" 
+            id="username" 
+            [(ngModel)]="username" 
+            name="username"
+            required
+          />
+        </div>
+        
+        <div class="form-group">
+          <label for="password">Password *</label>
+          <input 
+            type="password" 
+            id="password" 
+            [(ngModel)]="password" 
+            name="password"
+            required
+          />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="transactionPin">Transaction PIN (4 digits) *</label>
+        <input 
+          type="password" 
+          id="transactionPin" 
+          [(ngModel)]="transactionPin" 
+          name="transactionPin"
+          maxlength="4"
+          pattern="[0-9]{4}"
+          required
+        />
+      </div>
+      
+      <div *ngIf="error" class="error-message">
+        {{ error }}
+      </div>
+      
+      <div *ngIf="success" class="success-message">
+        {{ success }}
+      </div>
+      
+      <button type="submit" class="btn-primary" [disabled]="loading">
+        {{ loading ? 'Creating Account...' : 'Create Account' }}
+      </button>
+    </form>
+    
+    <div class="login-link">
+      <p>Already have an account? <a (click)="navigateToLogin()">Login here</a></p>
+    </div>
+  </div>
+</div>

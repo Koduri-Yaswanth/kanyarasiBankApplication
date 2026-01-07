@@ -1,0 +1,137 @@
+<div class="dashboard-container">
+  <div class="dashboard-header">
+    <h1>Kanyarasi Bank - User Dashboard</h1>
+    <button class="btn-logout" (click)="logout()">Logout</button>
+  </div>
+
+  <div class="dashboard-content">
+    <div class="account-info-card">
+      <h2>Account Information</h2>
+      <div *ngIf="loadingAccountInfo" class="loading">Loading account information...</div>
+      <div *ngIf="!loadingAccountInfo && accountInfo" class="info-display">
+        <pre>{{ accountInfo }}</pre>
+      </div>
+      <div *ngIf="!loadingAccountInfo && error" class="error-message">
+        {{ error }}
+      </div>
+      <div *ngIf="!loadingAccountInfo && !accountInfo && !error" class="empty-state">
+        No account information available
+      </div>
+    </div>
+
+    <div *ngIf="currentBalance !== null && currentBalance !== undefined" class="balance-card">
+      <h2>Current Balance</h2>
+      <div class="balance-display">
+        <span class="balance-amount">₹{{ currentBalance | number:'1.2-2' }}</span>
+      </div>
+    </div>
+
+    <div class="actions-card">
+      <h2>Quick Actions</h2>
+      <button class="btn-action" (click)="toggleTransactionForm()">
+        {{ showTransactionForm ? 'Cancel Transaction' : 'New Transaction' }}
+      </button>
+    </div>
+
+    <div *ngIf="showTransactionForm" class="transaction-form-card">
+      <h2>Make Transaction</h2>
+      <form (ngSubmit)="submitTransaction()" class="transaction-form">
+        <div class="form-group">
+          <label for="transactionType">Transaction Type *</label>
+          <select id="transactionType" [(ngModel)]="transactionRequest.transactionType" name="transactionType" required>
+            <option *ngFor="let type of transactionTypes" [value]="type">{{ type }}</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="amount">Amount *</label>
+          <input 
+            type="number" 
+            id="amount" 
+            [(ngModel)]="transactionRequest.amount" 
+            name="amount"
+            min="0.01"
+            step="0.01"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="description">Description</label>
+          <input 
+            type="text" 
+            id="description" 
+            [(ngModel)]="transactionRequest.description" 
+            name="description"
+          />
+        </div>
+
+        <div *ngIf="transactionRequest.transactionType === 'TRANSFER'" class="form-group">
+          <label for="toAccountNumber">To Account Number *</label>
+          <input 
+            type="number" 
+            id="toAccountNumber" 
+            [(ngModel)]="transactionRequest.toAccountNumber" 
+            name="toAccountNumber"
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="transactionPin">Transaction PIN (4 digits) *</label>
+          <input 
+            type="password" 
+            id="transactionPin" 
+            [(ngModel)]="transactionRequest.transactionPin" 
+            name="transactionPin"
+            maxlength="4"
+            pattern="[0-9]{4}"
+            required
+          />
+        </div>
+
+        <div *ngIf="error" class="error-message">
+          {{ error }}
+        </div>
+        
+        <div *ngIf="success" class="success-message">
+          {{ success }}
+        </div>
+
+        <button type="submit" class="btn-primary" [disabled]="loading">
+          {{ loading ? 'Processing...' : 'Submit Transaction' }}
+        </button>
+      </form>
+    </div>
+
+    <div class="transactions-card">
+      <h2>Transaction History</h2>
+      <div *ngIf="loadingTransactions" class="loading">Loading transactions...</div>
+      <div *ngIf="!loadingTransactions && transactions.length === 0" class="empty-state">
+        No transactions found
+      </div>
+      <div *ngIf="!loadingTransactions && transactions.length > 0" class="transactions-list">
+        <div *ngFor="let transaction of transactions" class="transaction-item">
+          <div class="transaction-header">
+            <span class="transaction-type" [class.deposit]="transaction.transactionType === 'DEPOSIT'"
+                  [class.withdrawal]="transaction.transactionType === 'WITHDRAWAL'"
+                  [class.transfer]="transaction.transactionType === 'TRANSFER'">
+              {{ transaction.transactionType }}
+            </span>
+            <span class="transaction-amount" [class.positive]="transaction.transactionType === 'DEPOSIT'"
+                  [class.negative]="transaction.transactionType !== 'DEPOSIT'">
+              {{ transaction.transactionType === 'DEPOSIT' ? '+' : '-' }}₹{{ transaction.amount }}
+            </span>
+          </div>
+          <div class="transaction-details">
+            <p *ngIf="transaction.description"><strong>Description:</strong> {{ transaction.description }}</p>
+            <p *ngIf="transaction.toAccountNumber"><strong>To Account:</strong> {{ transaction.toAccountNumber }}</p>
+            <p><strong>Date:</strong> {{ transaction.transactionDate | date:'medium' }}</p>
+            <p><strong>Status:</strong> <span class="status" [class.success]="transaction.status === 'SUCCESS'"
+                  [class.failed]="transaction.status === 'FAILED'">{{ transaction.status }}</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
